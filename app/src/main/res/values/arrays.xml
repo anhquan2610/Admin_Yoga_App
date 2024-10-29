@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="course_types">
+        <item>Flow Yoga</item>
+        <item>Aerial Yoga</item>
+        <item>Family Yoga</item>
+    </string-array>
+</resources>

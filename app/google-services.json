@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "317722593153",
+    "project_id": "healthyogaapp",
+    "storage_bucket": "healthyogaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317722593153:android:e0f3bcdd64af8fcc6f4a80",
+        "android_client_info": {
+          "package_name": "com.example.yogaadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8FJMeciw21iGtMkP4f9Vop1qsiubaBYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

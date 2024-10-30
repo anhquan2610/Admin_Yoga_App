@@ -199,6 +199,8 @@ class ClassFormActivity : AppCompatActivity() {
 
         val classId = UUID.randomUUID().toString()
 
+        val courseFirestoreId = courseList.find { it.id == courseId }?.firestoreId
+
         val newClass = YogaClass(
             courseId = courseId,
             teacherName = teacherName,
@@ -208,7 +210,8 @@ class ClassFormActivity : AppCompatActivity() {
             fee = fee,
             classDuration = duration,
             days = daysString,
-            firestoreClassId = classId
+            firestoreClassId = classId,
+            courseFirestoreId = courseFirestoreId
         )
 
         val isInserted = dbHelper.addClass(newClass)

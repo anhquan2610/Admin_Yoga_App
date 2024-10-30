@@ -18,7 +18,8 @@ data class YogaClass(
     val days: String,
     val classDuration: String,
     var isSynced: Boolean = false,
-    var firestoreClassId: String? = null
+    var firestoreClassId: String? = null,
+    val courseFirestoreId: String?
 )
 
 
@@ -26,7 +27,7 @@ data class YogaClass(
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "yoga.db"
-        private const val DATABASE_VERSION = 20
+        private const val DATABASE_VERSION = 22
 
         // Courses table constants
         private const val TABLE_COURSES = "courses"
@@ -55,6 +56,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_DESCRIPTION_CLASS = "description"
         private const val COLUMN_DAYS = "days"
         private const val COLUMN_DURATION = "classDuration"
+        private const val COLUMN_FIRESTORE_COURSE_ID = "courseFirestoreId"
+
 
     }
 
@@ -86,6 +89,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $COLUMN_DAYS TEXT,  
                 $COLUMN_DURATION TEXT,
                 $COLUMN_FIRESTORECLASS_ID TEXT,
+                $COLUMN_FIRESTORE_COURSE_ID TEXT,
                 FOREIGN KEY($COLUMN_COURSE_ID) REFERENCES $TABLE_COURSES($COLUMN_ID) ON DELETE CASCADE
             )
         """.trimIndent()
@@ -109,6 +113,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         if (oldVersion < 20) {
             db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN firestoreClassId TEXT") // Thêm cột firestoreClassId
+        }
+        if (oldVersion < 21) {
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_FIRESTORE_ID TEXT") // Thêm cột firestoreClassId
         }
     }
 
@@ -186,7 +193,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val courseType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TYPE))
                 val firestoreId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FIRESTORE_ID))
 
-                courseList.add(Course(id, name, startDate, endDate, capacity, description, courseType))
+                courseList.add(Course(id, name, startDate, endDate, capacity, description, courseType, false,  firestoreId))
             }
         }
         db.close()
@@ -282,6 +289,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DAYS, yogaClass.days)
             put(COLUMN_DURATION, yogaClass.classDuration)
             put(COLUMN_FIRESTORECLASS_ID, yogaClass.firestoreClassId)
+            put(COLUMN_FIRESTORE_COURSE_ID, yogaClass.courseFirestoreId)
+
         }
         val result = db.insert("Classes", null, values)
         db.close()
@@ -312,14 +321,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION_CLASS))
                 val days = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DAYS))
                 val duration = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DURATION))
-
                 val firestoreClassIdColumnIndex = it.getColumnIndex(COLUMN_FIRESTORECLASS_ID)
                 val firestoreClassId = if (firestoreClassIdColumnIndex != -1) {
                     it.getString(firestoreClassIdColumnIndex)
                 } else {
                     null // Nếu không có, trả về null
                 }
-                classList.add(YogaClass(classId, courseId, teacherName, classDate, fee, className, description, days, duration, false,  firestoreClassId)) // Thêm mô tả lớp học vào đối tượng YogaClass
+                val firestoreCourseIdColumnIndex = it.getColumnIndex((COLUMN_FIRESTORE_COURSE_ID))
+                val courseFirestoreId = if (firestoreCourseIdColumnIndex != -1) {
+                    it.getString(firestoreClassIdColumnIndex)
+                } else {
+                    null // Nếu không có, trả về null
+                }
+                classList.add(YogaClass(classId, courseId, teacherName, classDate, fee, className, description, days, duration, false,  firestoreClassId, courseFirestoreId)) // Thêm mô tả lớp học vào đối tượng YogaClass
             }
         }
         db.close()
@@ -338,6 +352,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DESCRIPTION_CLASS, yogaClass.description)
             put(COLUMN_DAYS, yogaClass.days)
             put(COLUMN_DURATION, yogaClass.classDuration)
+            put(COLUMN_FIRESTORE_COURSE_ID, yogaClass.courseFirestoreId)
         }
 
         val result = db.update(
@@ -349,6 +364,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return result > 0 // Trả về true nếu cập nhật thành công
     }
+
+
 
     fun getClassById(classId: Int): YogaClass? {
         val db = readableDatabase
@@ -371,6 +388,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION_CLASS))
             val days = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DAYS))
             val durations = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DURATION))
+            val courseFirestoreId = cursor.getString(cursor.getColumnIndexOrThrow(
+                COLUMN_FIRESTORE_COURSE_ID))
 
             YogaClass(
                 classId = classId,
@@ -381,7 +400,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 className = className,
                 description = description,
                 days = days,
-                classDuration  = durations
+                classDuration  = durations,
+                courseFirestoreId = courseFirestoreId
             )
         } else {
             null

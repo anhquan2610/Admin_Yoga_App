@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.yogaadmin.R
+import com.example.yogaadmin.data.Course
 import com.example.yogaadmin.data.DatabaseHelper
 import com.example.yogaadmin.data.YogaClass
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +30,7 @@ class UpdateClassFragment : Fragment() {
     private lateinit var buttonUpdate: Button
     private lateinit var imageViewBackClas: ImageView
 
+
     // Các CheckBox để chọn ngày học trong tuần
     private lateinit var checkBoxMonday: CheckBox
     private lateinit var checkBoxTuesday: CheckBox
@@ -46,7 +48,7 @@ class UpdateClassFragment : Fragment() {
     private var courseEndDate: String? = null
 
     companion object {
-        fun newInstance(classId: Int, courseId: Int, firestoreClassId: String? ,startDate: String?, endDate: String?): UpdateClassFragment {
+        fun newInstance(classId: Int, courseId: Int, firestoreClassId: String?, courseFirestoreId: String? ,startDate: String?, endDate: String?): UpdateClassFragment {
             val fragment = UpdateClassFragment() // Tạo một thể hiện mới của UpdateClassFragment
 
             val args = Bundle().apply {
@@ -55,6 +57,7 @@ class UpdateClassFragment : Fragment() {
                 putString("firestoreClassId", firestoreClassId)
                 putString("startDate", startDate)
                 putString("endDate", endDate)
+                putString("courseFirestoreId", courseFirestoreId)
             }
             fragment.arguments = args // Gán arguments cho fragment
             Log.d("UpdateClassFragment", "Received Start Date: $startDate, End Date: $endDate")
@@ -79,7 +82,9 @@ class UpdateClassFragment : Fragment() {
             courseId = it.getInt("courseId", 0)
             courseStartDate = it.getString("startDate")
             courseEndDate = it.getString("endDate")
+
         }
+
 
         // Khởi tạo các view
         editClassName = view.findViewById(R.id.editClassName)
@@ -244,6 +249,12 @@ class UpdateClassFragment : Fragment() {
 
         // Cập nhật thông tin trong SQLite
         val dbHelper = DatabaseHelper(requireContext())
+        courseId = arguments?.getInt("courseId") ?: 0
+        yogaClassId = arguments?.getInt("classId")?:0
+        val classYoga = dbHelper.getClassById(yogaClassId)
+
+
+
         val updatedClass = YogaClass(
             classId = yogaClassId,
             className = className,
@@ -254,7 +265,8 @@ class UpdateClassFragment : Fragment() {
             description = description,
             courseId = courseId,
             days = selectedDays.joinToString(", "),
-            firestoreClassId = arguments?.getString("firestoreClassId")
+            firestoreClassId = arguments?.getString("firestoreClassId"),
+            courseFirestoreId = classYoga?.courseFirestoreId
         )
 
         val success = dbHelper.updateClass(updatedClass)
@@ -283,7 +295,9 @@ class UpdateClassFragment : Fragment() {
             "fee" to yogaClass.fee,
             "duration" to yogaClass.classDuration,
             "description" to yogaClass.description,
-            "courseId" to yogaClass.courseId
+            "courseId" to yogaClass.courseId,
+            "firestoreClassId" to yogaClass.firestoreClassId, // Đảm bảo lưu firestoreClassId
+            "courseFirestoreId" to yogaClass.courseFirestoreId
         )
 
         firestore.collection("classes").document(firestoreClassId)

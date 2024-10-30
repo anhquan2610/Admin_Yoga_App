@@ -144,7 +144,7 @@ class CourseListFragment : Fragment() {
                     }
                 }
 
-                // Xóa khóa học từ Firestore trước
+                // Xóa khóa học từ Firestore trước kia
                 deleteCourseFromFirestore(firestoreId) { success ->
                     if (success) {
                         // Nếu xóa thành công từ Firestore, xóa khóa học trong SQLite

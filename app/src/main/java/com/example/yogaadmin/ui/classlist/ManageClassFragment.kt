@@ -105,6 +105,7 @@ class ManageClassFragment : Fragment() {
             },
             onUpdateClick = { yogaClass ->
                 val firestoreClassId = yogaClass.firestoreClassId
+                val courseFirestoreId = yogaClass.courseFirestoreId
                 if (firestoreClassId != null) {
                     val updateClassFragment = UpdateClassFragment.newInstance(
                         classId = yogaClass.classId,
@@ -112,6 +113,7 @@ class ManageClassFragment : Fragment() {
                         startDate = startDate,
                         endDate = endDate,
                         firestoreClassId = firestoreClassId,
+                        courseFirestoreId = courseFirestoreId
                         // Chỉ gọi nếu không null
                     )
                     requireActivity().supportFragmentManager.beginTransaction()

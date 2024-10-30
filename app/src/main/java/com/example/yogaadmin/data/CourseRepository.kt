@@ -5,8 +5,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 data class Course(
     val id: Int = 0,
     val name: String,
-    val startDate: String,
-    val endDate: String,
+    val dayOfWeek: String,
+    val time: String,
+    val duration: Int,
+    val price: Double,
     val capacity: Int,
     val description: String?,
     val courseType: String,

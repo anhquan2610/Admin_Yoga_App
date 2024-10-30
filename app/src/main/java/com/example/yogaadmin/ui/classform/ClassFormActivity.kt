@@ -78,8 +78,7 @@ class ClassFormActivity : AppCompatActivity() {
         // Lấy courseId từ Intent
         val courseId = intent.getIntExtra("courseId", 0)
         courseList = dbHelper.getAllCourses() // Lấy danh sách khóa học từ DatabaseHelper
-        startDate = getStartDate(courseId) // Lấy ngày bắt đầu khóa học
-        endDate = getEndDate(courseId) // Lấy ngày kết thúc khóa học
+
 
         // Xử lý sự kiện khi nhấn vào EditText để chọn ngày
         classDateEditText.setOnClickListener {
@@ -296,13 +295,6 @@ class ClassFormActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-    private fun getStartDate(courseId: Int): String? {
-        return courseList.find { it.id == courseId }?.startDate
-    }
-
-    private fun getEndDate(courseId: Int): String? {
-        return courseList.find { it.id == courseId }?.endDate
-    }
 
     private fun isInternetAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -19,9 +19,11 @@ class CourseListAdapter(
     inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textViewCourseName: TextView = itemView.findViewById(R.id.textViewCourseName)
         private val textViewCourseType: TextView = itemView.findViewById(R.id.textViewCourseType)
-        private val textViewStartDate: TextView = itemView.findViewById(R.id.textViewStartDate)
-        private val textViewEndDate: TextView = itemView.findViewById(R.id.textViewEndDate)
         private val textViewCapacity: TextView = itemView.findViewById(R.id.textViewCapacity)
+        private val textViewDay: TextView = itemView.findViewById(R.id.textViewDay)
+        private val textViewTime: TextView = itemView.findViewById(R.id.textViewTime) // Hiển thị thời gian
+        private val textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice) // Hiển thị giá
+        private val textViewDuration: TextView = itemView.findViewById(R.id.textViewDuration)
         private val buttonDelete: ImageButton = itemView.findViewById(R.id.buttonDelete)
         private val buttonUpdate: ImageButton = itemView.findViewById(R.id.buttonUpdate)
         private val buttonViewDetails: ImageButton = itemView.findViewById(R.id.buttonViewDetails)
@@ -29,9 +31,11 @@ class CourseListAdapter(
         fun bind(course: Course) {
             textViewCourseName.text = course.name
             textViewCourseType.text = "Loại khoá học: ${course.courseType}"
-            textViewStartDate.text = "Ngày bắt đầu: ${course.startDate}"
-            textViewEndDate.text = "Ngày kết thúc: ${course.endDate}"
             textViewCapacity.text = "Số lượng: ${course.capacity}"
+            textViewDay.text = "Ngày: ${course.dayOfWeek}"
+            textViewTime.text = "Thời gian: ${course.time}" // Hiển thị thời gian
+            textViewPrice.text = "Giá: ${course.price}" // Hiển thị giá
+            textViewDuration.text = "Thời lượng: ${course.duration}" // Hiển thị thời lượng
 
             // Xử lý sự kiện xóa với thông báo xác nhận
             buttonDelete.setOnClickListener {

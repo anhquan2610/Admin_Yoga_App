@@ -3,5 +3,15 @@
         <item>A-Z</item>
         <item>Z-A</item>
     </string-array>
+    <string-array name="days_of_week">
+        <item>Chủ nhật</item>
+        <item>Thứ hai</item>
+        <item>Thứ ba</item>
+        <item>Thứ tư</item>
+        <item>Thứ năm</item>
+        <item>Thứ sáu</item>
+        <item>Thứ bảy</item>
+    </string-array>
+
     <string name="add_class"></string>
 </resources>

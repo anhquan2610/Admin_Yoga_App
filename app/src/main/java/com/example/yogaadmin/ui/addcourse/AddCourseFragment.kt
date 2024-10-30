@@ -1,6 +1,7 @@
 package com.example.yogaadmin.ui.addcourse
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -22,8 +23,7 @@ import com.example.yogaadmin.data.CourseRepository
 
 class AddCourseFragment : Fragment() {
 
-    private lateinit var editTextStartDate: EditText
-    private lateinit var editTextEndDate: EditText
+    private lateinit var spinnerDayOfWeek: Spinner
     private lateinit var spinnerCourseType: Spinner
     private lateinit var firestore: FirebaseFirestore
 
@@ -45,22 +45,32 @@ class AddCourseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val editTextCourseName: EditText = view.findViewById(R.id.editTextCourseName)
-        editTextStartDate = view.findViewById(R.id.editTextStartDate)
-        editTextEndDate = view.findViewById(R.id.editTextEndDate)
+        spinnerDayOfWeek = view.findViewById(R.id.spinnerDayOfWeek)
         val editTextCapacity: EditText = view.findViewById(R.id.editTextCapacity)
         val editTextDescription: EditText = view.findViewById(R.id.editTextDescription)
         spinnerCourseType = view.findViewById(R.id.spinnerCourseType)
         val buttonAddCourse: Button = view.findViewById(R.id.buttonAddCourse)
 
+        // Trường mới: Thời gian, Giá mỗi lớp, Thời lượng
+        val editTextTime: EditText = view.findViewById(R.id.editTextTime)
+        val editTextPrice: EditText = view.findViewById(R.id.editTextPrice)
+        val editTextDuration: EditText = view.findViewById(R.id.editTextDuration)
+
+        editTextTime.setOnClickListener { showTimePickerDialog(editTextTime) }
+
+        // Cấu hình dữ liệu cho spinnerDayOfWeek
+        val daysOfWeek = resources.getStringArray(R.array.days_of_week) // Đảm bảo bạn đã định nghĩa mảng này trong strings.xml
+        val dayOfWeekAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, daysOfWeek)
+        dayOfWeekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerDayOfWeek.adapter = dayOfWeekAdapter
+
         val buttonBack: ImageView = view.findViewById(R.id.buttonBack)
         buttonBack.setOnClickListener {
             // Kiểm tra nếu có bất kỳ thông tin nào đã được nhập
             if (editTextCourseName.text.isNotEmpty() ||
-                editTextStartDate.text.isNotEmpty() ||
-                editTextEndDate.text.isNotEmpty() ||
                 editTextCapacity.text.isNotEmpty() ||
                 editTextDescription.text.isNotEmpty() ||
-                spinnerCourseType.selectedItemPosition != 0 // Giả sử vị trí 0 là "Chọn loại khóa học"
+                spinnerCourseType.selectedItemPosition != 0
             ) {
                 // Hiển thị hộp thoại xác nhận
                 AlertDialog.Builder(requireContext()).apply {
@@ -83,37 +93,24 @@ class AddCourseFragment : Fragment() {
             }
         }
 
-        editTextStartDate.isFocusable = false
-        editTextStartDate.isFocusableInTouchMode = false
-        editTextEndDate.isFocusable = false
-        editTextEndDate.isFocusableInTouchMode = false
-
-        editTextStartDate.setOnClickListener { showDatePickerDialog(editTextStartDate) }
-        editTextEndDate.setOnClickListener { showDatePickerDialog(editTextEndDate) }
-
         buttonAddCourse.setOnClickListener {
             val courseName = editTextCourseName.text.toString()
-            val startDate = editTextStartDate.text.toString()
-            val endDate = editTextEndDate.text.toString()
+            val selectedDay = spinnerDayOfWeek.selectedItem.toString()
             val capacity = editTextCapacity.text.toString().toIntOrNull() ?: 0
             val description = editTextDescription.text.toString()
             val courseType = spinnerCourseType.selectedItem.toString()
+            val time = editTextTime.text.toString()
+            val price = editTextPrice.text.toString().toDoubleOrNull()
+            val duration = editTextDuration.text.toString().toIntOrNull()
 
-            if (courseName.isNotEmpty() && startDate.isNotEmpty() && endDate.isNotEmpty() && capacity > 0 && courseType.isNotEmpty()) {
-
-                val startDateParts = startDate.split("/").map { it.toInt() }
-                val endDateParts = endDate.split("/").map { it.toInt() }
-                if (endDateParts[2] < startDateParts[2] ||
-                    (endDateParts[2] == startDateParts[2] && endDateParts[1] < startDateParts[1]) ||
-                    (endDateParts[2] == startDateParts[2] && endDateParts[1] == startDateParts[1] && endDateParts[0] < startDateParts[0])) {
-                    Toast.makeText(requireContext(), "Ngày kết thúc phải sau ngày bắt đầu", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
+            if (courseName.isNotEmpty() && selectedDay.isNotEmpty() && capacity > 0 && courseType.isNotEmpty() &&
+                time.isNotEmpty() && price != null && duration != null) {
                 // Tạo đối tượng khóa học mới mà không gán ID ngay
-                val course = Course(name = courseName, startDate = startDate, endDate = endDate, capacity = capacity, description = description, courseType = courseType)
-
-                // Upload to Firestore trước để lấy ID Firestore
+                val course = Course(
+                    name = courseName, dayOfWeek = selectedDay, capacity = capacity,
+                    description = description, courseType = courseType, time = time,
+                    price = price, duration = duration
+                )
                 uploadData(course)
             } else {
                 Toast.makeText(requireContext(), "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show()
@@ -137,11 +134,13 @@ class AddCourseFragment : Fragment() {
         val courseData = hashMapOf(
             "id" to courseId,
             "name" to course.name,
-            "startDate" to course.startDate,
-            "endDate" to course.endDate,
+            "dayOfWeek" to course.dayOfWeek,
             "capacity" to course.capacity,
             "description" to course.description,
-            "courseType" to course.courseType
+            "courseType" to course.courseType,
+            "time" to course.time,
+            "price" to course.price,
+            "duration" to course.duration
         )
 
         firestore.collection("courses").document(courseId)
@@ -181,17 +180,14 @@ class AddCourseFragment : Fragment() {
     }
 
 
-    private fun showDatePickerDialog(editText: EditText) {
+    private fun showTimePickerDialog(editText: EditText) {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
-        val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-            editText.setText(formattedDate)
-        }, year, month, day)
-
-        datePickerDialog.show()
+        TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
+            val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            editText.setText(formattedTime)
+        }, hour, minute, true).show()
     }
 }

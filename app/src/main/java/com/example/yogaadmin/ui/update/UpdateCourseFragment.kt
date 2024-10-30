@@ -1,6 +1,7 @@
 package com.example.yogaadmin.ui.updatecourse
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.yogaadmin.R
@@ -21,8 +23,8 @@ class UpdateCourseFragment : Fragment() {
     private lateinit var databaseHelper: DatabaseHelper
     private lateinit var firestore: FirebaseFirestore
     private var courseId: Int = 0
-    private lateinit var startDateEditText: EditText
-    private lateinit var endDateEditText: EditText
+    private lateinit var spinnerDayOfWeek: Spinner
+    private lateinit var editTextTime: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,49 +44,51 @@ class UpdateCourseFragment : Fragment() {
 
         if (course != null && course.id != 0) {
             val nameEditText: EditText = view.findViewById(R.id.editTextCourseName)
-            startDateEditText = view.findViewById(R.id.editTextStartDate)
-            endDateEditText = view.findViewById(R.id.editTextEndDate)
             val capacityEditText: EditText = view.findViewById(R.id.editTextCapacity)
             val descriptionEditText: EditText = view.findViewById(R.id.editTextDescription)
             val typeEditText: EditText = view.findViewById(R.id.editTextCourseType)
+            spinnerDayOfWeek = view.findViewById(R.id.spinnerDayOfWeekUD)
+            editTextTime = view.findViewById(R.id.editTextTimeUD)
+            val durationEditText: EditText = view.findViewById(R.id.editTextDurationUD)
+            val priceEditText: EditText = view.findViewById(R.id.editTextPriceUD)
 
             nameEditText.setText(course.name)
-            startDateEditText.setText(course.startDate)
-            endDateEditText.setText(course.endDate)
             capacityEditText.setText(course.capacity.toString())
             descriptionEditText.setText(course.description)
             typeEditText.setText(course.courseType)
+            spinnerDayOfWeek.setSelection(getDayOfWeekPosition(course.dayOfWeek)) // Giả định có hàm getDayOfWeekPosition
+            editTextTime.setText(course.time)
+            durationEditText.setText(course.duration.toString())
+            priceEditText.setText(course.price.toString())
 
-            startDateEditText.setOnClickListener { showDatePickerDialog(startDateEditText) }
-            endDateEditText.setOnClickListener { showDatePickerDialog(endDateEditText) }
+
+            editTextTime.setOnClickListener { showTimePickerDialog(editTextTime) }
 
             val updateButton: Button = view.findViewById(R.id.buttonUpdate)
             updateButton.setOnClickListener {
                 val updatedCourseName = nameEditText.text.toString()
-                val updatedStartDate = startDateEditText.text.toString()
-                val updatedEndDate = endDateEditText.text.toString()
+                val updatedDayOfWeek = spinnerDayOfWeek.selectedItem.toString()
+                val updatedTime = editTextTime.text.toString()
+                val updatedDuration: Int = durationEditText.text.toString().toIntOrNull() ?: 0 // Chuyển đổi sang Int
+                val updatedPrice: Double = priceEditText.text.toString().toDoubleOrNull() ?: 0.0 // Chuyển đổi sang Double
                 val updatedCapacity = capacityEditText.text.toString().toIntOrNull() ?: 0
                 val updatedDescription = descriptionEditText.text.toString()
                 val updatedCourseType = typeEditText.text.toString()
 
-                if (updatedCourseName.isNotEmpty() && updatedStartDate.isNotEmpty() &&
-                    updatedEndDate.isNotEmpty() && updatedCapacity > 0 && updatedCourseType.isNotEmpty()) {
+                if (updatedCourseName.isNotEmpty() &&
+                    updatedDayOfWeek.isNotEmpty() &&
+                    updatedCapacity > 0 &&
+                    updatedCourseType.isNotEmpty()
+                )
+                {
 
-                    val startDateParts = updatedStartDate.split("/").map { it.toInt() }
-                    val endDateParts = updatedEndDate.split("/").map { it.toInt() }
-
-                    if (endDateParts[2] < startDateParts[2] ||
-                        (endDateParts[2] == startDateParts[2] && endDateParts[1] < startDateParts[1]) ||
-                        (endDateParts[2] == startDateParts[2] && endDateParts[1] == startDateParts[1] && endDateParts[0] <= startDateParts[0])) {
-                        Toast.makeText(requireContext(), "Ngày kết thúc phải sau ngày bắt đầu", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-
-                    val updatedCourse = Course(
+                val updatedCourse = Course(
                         id = courseId,
                         name = updatedCourseName,
-                        startDate = updatedStartDate,
-                        endDate = updatedEndDate,
+                        dayOfWeek = updatedDayOfWeek,
+                        time = updatedTime,
+                        duration = updatedDuration,
+                        price = updatedPrice,
                         capacity = updatedCapacity,
                         description = updatedDescription,
                         courseType = updatedCourseType,
@@ -111,19 +115,23 @@ class UpdateCourseFragment : Fragment() {
         }
     }
 
-    private fun showDatePickerDialog(editText: EditText) {
+    private fun showTimePickerDialog(editText: EditText) {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
-        val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-            editText.setText(formattedDate)
-        }, year, month, day)
-
-        datePickerDialog.show()
+        TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
+            val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            editText.setText(formattedTime)
+        }, hour, minute, true).show()
     }
+
+    private fun getDayOfWeekPosition(dayOfWeek: String): Int {
+        val daysOfWeek = resources.getStringArray(R.array.days_of_week)
+        return daysOfWeek.indexOf(dayOfWeek)
+    }
+
+
 
     private fun updateCourseInFirestore(course: Course) {
         course.firestoreId?.let { firestoreId ->

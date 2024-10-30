@@ -30,21 +30,27 @@
         android:layout_height="wrap_content"
         android:hint="Course Name" />
 
-    <EditText
-        android:id="@+id/editTextStartDate"
+    <Spinner
+        android:id="@+id/spinnerDayOfWeekUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ngày bắt đầu"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-
+        android:entries="@array/days_of_week"
+        android:layout_marginBottom="10dp"/>
     <EditText
-        android:id="@+id/editTextEndDate"
+        android:id="@+id/editTextTimeUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ngày kết thúc"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:hint="Ngày trong tuần" />
+    <EditText
+        android:id="@+id/editTextDurationUD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ngày trong tuần" />
+    <EditText
+        android:id="@+id/editTextPriceUD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ngày trong tuần" />
 
     <EditText
         android:id="@+id/editTextCapacity"

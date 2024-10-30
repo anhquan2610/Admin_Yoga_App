@@ -27,15 +27,19 @@ data class YogaClass(
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "yoga.db"
-        private const val DATABASE_VERSION = 22
+        private const val DATABASE_VERSION = 24
+
+
 
         // Courses table constants
         private const val TABLE_COURSES = "courses"
         private const val COLUMN_ID = "id"
+        private const val COLUMN_DAYOFWEEK = "dayOfWeek"
+        private const val COLUMN_PRICE = "price"
+        private const val COLUMN_TIME = "time"
+        private const val COLUMN_DURATION_COURSE = "duration"
         private const val COLUMN_FIRESTORE_ID = "firestoreId"
         private const val COLUMN_NAME = "name"
-        private const val COLUMN_START_DATE = "startDate"
-        private const val COLUMN_END_DATE = "endDate"
         private const val COLUMN_CAPACITY = "capacity"
         private const val COLUMN_DESCRIPTION = "description"
         private const val COLUMN_TYPE = "courseType"
@@ -61,15 +65,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     }
 
-    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createCoursesTable = """
             CREATE TABLE $TABLE_COURSES (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_NAME TEXT,
-                $COLUMN_START_DATE TEXT,
-                $COLUMN_END_DATE TEXT,
+                $COLUMN_DAYOFWEEK TEXT,
+                $COLUMN_DURATION_COURSE INTEGER,
+                $COLUMN_TIME TEXT,
+                $COLUMN_PRICE REAL,
                 $COLUMN_CAPACITY INTEGER,
                 $COLUMN_DESCRIPTION TEXT,
                 $COLUMN_TYPE TEXT,
@@ -117,6 +122,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (oldVersion < 21) {
             db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_FIRESTORE_ID TEXT") // Thêm cột firestoreClassId
         }
+        if (oldVersion < 22) {
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_DAYOFWEEK  TEXT") // Thêm cột firestoreClassId
+        }
+        if (oldVersion < 23) {
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_DURATION_COURSE INTEGER")
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_TIME TEXT")
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_PRICE REAL")// Thêm cột firestoreClassId
+        }
     }
 
 
@@ -149,13 +162,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_NAME, course.name)
-            put(COLUMN_START_DATE, course.startDate)
-            put(COLUMN_END_DATE, course.endDate)
             put(COLUMN_CAPACITY, course.capacity)
             put(COLUMN_DESCRIPTION, course.description) // Lưu mô tả khóa học
             put(COLUMN_TYPE, course.courseType)
             put(COLUMN_FIRESTORE_ID, course.firestoreId)
-
+            put(COLUMN_DAYOFWEEK, course.dayOfWeek)
+            put(COLUMN_PRICE, course.price)
+            put(COLUMN_DURATION_COURSE, course.duration)
+            put(COLUMN_TIME, course.time)
         }
         db.insert(TABLE_COURSES, null, values)
 
@@ -166,12 +180,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_NAME, course.name)
-            put(COLUMN_START_DATE, course.startDate)
-            put(COLUMN_END_DATE, course.endDate)
             put(COLUMN_CAPACITY, course.capacity)
             put(COLUMN_DESCRIPTION, course.description) // Cập nhật mô tả khóa học
             put(COLUMN_TYPE, course.courseType)
-
+            put(COLUMN_DAYOFWEEK, course.dayOfWeek)
+            put(COLUMN_DURATION_COURSE, course.duration)
+            put(COLUMN_TIME, course.time)
+            put(COLUMN_PRICE, course.price)
         }
         db.update(TABLE_COURSES, values, "$COLUMN_ID = ?", arrayOf(course.id.toString()))
         db.close()
@@ -186,14 +201,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             while (cursor.moveToNext()) {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
                 val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
-                val startDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_START_DATE))
-                val endDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_END_DATE))
+                val dayOfWeek = cursor.getString((cursor.getColumnIndexOrThrow(COLUMN_DAYOFWEEK)))
                 val capacity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CAPACITY))
                 val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION)) // Lấy mô tả khóa học
                 val courseType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TYPE))
                 val firestoreId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FIRESTORE_ID))
+                val price = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
+                val duration = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DURATION_COURSE))
+                val time = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIME))
 
-                courseList.add(Course(id, name, startDate, endDate, capacity, description, courseType, false,  firestoreId))
+                courseList.add(Course(id, name, dayOfWeek, time, duration, price,  capacity,  description, courseType, false,  firestoreId,))
             }
         }
         db.close()
@@ -216,8 +233,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             if (it.moveToFirst()) {
                 val id = it.getInt(it.getColumnIndexOrThrow(COLUMN_ID))
                 val name = it.getString(it.getColumnIndexOrThrow(COLUMN_NAME))
-                val startDate = it.getString(it.getColumnIndexOrThrow(COLUMN_START_DATE))
-                val endDate = it.getString(it.getColumnIndexOrThrow(COLUMN_END_DATE))
+                val dayOfWeek = it.getString(it.getColumnIndexOrThrow(COLUMN_DAYOFWEEK))
+                val time = it.getString(it.getColumnIndexOrThrow(COLUMN_TIME))
+                val duration = it.getInt(it.getColumnIndexOrThrow(COLUMN_DURATION_COURSE))
+                val price = it.getDouble(it.getColumnIndexOrThrow(COLUMN_PRICE))
                 val capacity = it.getInt(it.getColumnIndexOrThrow(COLUMN_CAPACITY))
                 val description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION))
                 val courseType = it.getString(it.getColumnIndexOrThrow(COLUMN_TYPE))
@@ -231,7 +250,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 }
 
                 // Tạo đối tượng Course với firestoreId là kiểu String?
-                Course(id, name, startDate, endDate, capacity, description, courseType, false, firestoreId)
+                Course(id, name, dayOfWeek, time, duration, price ,capacity, description, courseType, false, firestoreId)
             } else {
                 null // Trả về null nếu không tìm thấy khóa học
             }

@@ -29,6 +29,7 @@ import com.example.yogaadmin.ui.classform.ClassFormActivity
 import com.example.yogaadmin.ui.update.UpdateClassFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.math.log
 
 class ManageClassFragment : Fragment() {
 
@@ -40,8 +41,9 @@ class ManageClassFragment : Fragment() {
     private lateinit var backButton: ImageView
 
     private var courseId: Int = 0
-    private var startDate: String? = null
-    private var endDate: String? = null
+    private var dayOfWeek: String? = null
+
+
 
     // Khai báo ActivityResultLauncher
     private lateinit var addClassLauncher: ActivityResultLauncher<Intent>
@@ -49,12 +51,13 @@ class ManageClassFragment : Fragment() {
     companion object {
         private const val REQUEST_CODE = 1001
 
-        fun newInstance(courseId: Int, startDate: String, endDate: String): ManageClassFragment {
+        fun newInstance(courseId: Int, startDate: String, endDate: String,dayOfWeek: String): ManageClassFragment {
             val fragment = ManageClassFragment()
             val args = Bundle()
             args.putInt("courseId", courseId)
             args.putString("startDate", startDate)
             args.putString("endDate", endDate)
+            args.putString("dayOfWeek", dayOfWeek)
             fragment.arguments = args
             return fragment
         }
@@ -75,8 +78,10 @@ class ManageClassFragment : Fragment() {
 
         // Nhận courseId, startDate và endDate từ arguments
         courseId = arguments?.getInt("courseId") ?: 0
-        startDate = arguments?.getString("startDate")
-        endDate = arguments?.getString("endDate")
+        dayOfWeek = arguments?.getString("dayOfWeek")
+        Log.d("ClassFormActivity", "Received dayOfWeek: $dayOfWeek")
+
+
 
         // Ánh xạ RecyclerView, FloatingActionButton và EditText tìm kiếm
         classRecyclerView = view.findViewById(R.id.classRecyclerView)
@@ -106,12 +111,12 @@ class ManageClassFragment : Fragment() {
             onUpdateClick = { yogaClass ->
                 val firestoreClassId = yogaClass.firestoreClassId
                 val courseFirestoreId = yogaClass.courseFirestoreId
+
                 if (firestoreClassId != null) {
                     val updateClassFragment = UpdateClassFragment.newInstance(
                         classId = yogaClass.classId,
                         courseId = courseId,
-                        startDate = startDate,
-                        endDate = endDate,
+                        dayOfWeek = dayOfWeek,
                         firestoreClassId = firestoreClassId,
                         courseFirestoreId = courseFirestoreId
                         // Chỉ gọi nếu không null
@@ -134,10 +139,11 @@ class ManageClassFragment : Fragment() {
 
         // Xử lý sự kiện thêm lớp học
         addButton.setOnClickListener {
+            Log.d("ManageClassFragment", "courseId: $courseId")
+            Log.d("ManageClassFragment", "dayOfWeek: $dayOfWeek")
             val intent = Intent(requireContext(), ClassFormActivity::class.java).apply {
                 putExtra("courseId", courseId)
-                putExtra("startDate", startDate)
-                putExtra("endDate", endDate)
+                putExtra("dayOfWeek", dayOfWeek)
             }
             addClassLauncher.launch(intent)
         }

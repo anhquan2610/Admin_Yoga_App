@@ -5,53 +5,97 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/imageViewBack"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_back"
-        android:contentDescription="Back"
-        android:layout_margin="16dp" />
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/imageViewBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/textViewAddCourse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Course"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/textViewAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:text="Update Course"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
+        android:text="Course Name:" />
     <EditText
         android:id="@+id/editTextCourseName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Course Name" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Day Of Week:" />
     <Spinner
         android:id="@+id/spinnerDayOfWeekUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/days_of_week"
         android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type Course:" />
+    <Spinner
+        android:id="@+id/spinnerCourseTypeUD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/days_of_week"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time:" />
     <EditText
         android:id="@+id/editTextTimeUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ngày trong tuần" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time in course:" />
     <EditText
         android:id="@+id/editTextDurationUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ngày trong tuần" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price:" />
     <EditText
         android:id="@+id/editTextPriceUD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ngày trong tuần" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capacity:" />
     <EditText
         android:id="@+id/editTextCapacity"
         android:layout_width="match_parent"
@@ -59,17 +103,18 @@
         android:inputType="number"
         android:hint="Capacity" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description:" />
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Description" />
 
-    <EditText
-        android:id="@+id/editTextCourseType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Course Type" />
+
 
     <Button
         android:id="@+id/buttonUpdate"

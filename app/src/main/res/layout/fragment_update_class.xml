@@ -56,34 +56,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Class Start:" />
+            android:text="Day Of Week:" />
         <EditText
             android:id="@+id/editClassDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Ngày bắt đầu (dd/MM/yyyy)" />
 
-        <!-- Phí tham gia -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fee Class:" />
-        <EditText
-            android:id="@+id/editFee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phí tham gia" />
-
-        <!-- Thời lượng lớp học -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time study:" />
-        <EditText
-            android:id="@+id/editDuration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Thời lượng lớp học" />
 
         <!-- Mô tả -->
         <TextView
@@ -95,61 +74,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Mô tả" />
-
-
-
-        <!-- Ngày học trong tuần -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chọn ngày học trong tuần:" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/checkBoxMonday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Monday" />
-            <CheckBox
-                android:id="@+id/checkBoxTuesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tuesday" />
-            <CheckBox
-                android:id="@+id/checkBoxWednesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Wednesday" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <CheckBox
-                android:id="@+id/checkBoxThursday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thursday" />
-            <CheckBox
-                android:id="@+id/checkBoxFriday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Friday" />
-            <CheckBox
-                android:id="@+id/checkBoxSaturday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Saturday" />
-            <CheckBox
-                android:id="@+id/checkBoxSunday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sunday" />
-        </LinearLayout>
-
 
 
         <!-- Nút cập nhật -->

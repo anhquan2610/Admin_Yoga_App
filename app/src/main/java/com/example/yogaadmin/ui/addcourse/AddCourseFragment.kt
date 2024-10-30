@@ -3,6 +3,7 @@ package com.example.yogaadmin.ui.addcourse
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -20,12 +21,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import androidx.appcompat.app.AlertDialog
 import com.example.yogaadmin.data.CourseRepository
+import com.example.yogaadmin.ui.classform.ClassFormActivity
 
 class AddCourseFragment : Fragment() {
 
     private lateinit var spinnerDayOfWeek: Spinner
     private lateinit var spinnerCourseType: Spinner
     private lateinit var firestore: FirebaseFirestore
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,9 @@ class AddCourseFragment : Fragment() {
         val editTextDescription: EditText = view.findViewById(R.id.editTextDescription)
         spinnerCourseType = view.findViewById(R.id.spinnerCourseType)
         val buttonAddCourse: Button = view.findViewById(R.id.buttonAddCourse)
+
+
+
 
         // Trường mới: Thời gian, Giá mỗi lớp, Thời lượng
         val editTextTime: EditText = view.findViewById(R.id.editTextTime)
@@ -112,6 +119,7 @@ class AddCourseFragment : Fragment() {
                     price = price, duration = duration
                 )
                 uploadData(course)
+
             } else {
                 Toast.makeText(requireContext(), "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show()
             }

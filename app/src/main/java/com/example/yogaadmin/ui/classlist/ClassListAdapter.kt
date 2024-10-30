@@ -21,20 +21,14 @@ class ClassListAdapter(
         private val classNameTextView: TextView = itemView.findViewById(R.id.textViewClassName)
         private val textViewTeacherName: TextView = itemView.findViewById(R.id.textViewTeacherName)
         private val textViewClassDate: TextView = itemView.findViewById(R.id.textViewClassDate)
-        private val textViewFee: TextView = itemView.findViewById(R.id.textViewFee)
-        private val textViewDays: TextView = itemView.findViewById(R.id.textViewDays)
         private val descriptionTextView: TextView = itemView.findViewById(R.id.textViewDescription)
-        private val durationTextView: TextView = itemView.findViewById(R.id.textDuration)
         private val buttonDelete: ImageButton = itemView.findViewById(R.id.buttonDeleteClass)
         private val buttonUpdate: ImageButton = itemView.findViewById(R.id.buttonUpdateClass)
 
         fun bind(yogaClass: YogaClass) {
             classNameTextView.text = "Class Name: ${yogaClass.className}"
             textViewTeacherName.text = "Teacher: ${yogaClass.teacherName}"
-            textViewClassDate.text = "Start Date: ${formatClassDate(yogaClass.classDate)}"
-            durationTextView.text = "Time: ${yogaClass.classDuration} minutes"
-            textViewFee.text = "Class Fee: ${formatFee(yogaClass.fee)}$"  // Cập nhật cách hiển thị phí
-            textViewDays.text = "Days: ${yogaClass.days}/weekly"
+            textViewClassDate.text = "Day: ${formatClassDate(yogaClass.classDate)}"
             descriptionTextView.text = "Description: ${yogaClass.description}"
 
             buttonDelete.setOnClickListener {

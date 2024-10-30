@@ -12,11 +12,8 @@ data class YogaClass(
     val courseId: Int,
     val teacherName: String,
     val classDate: String,
-    val fee: Double,
     val className: String,
     val description: String,
-    val days: String,
-    val classDuration: String,
     var isSynced: Boolean = false,
     var firestoreClassId: String? = null,
     val courseFirestoreId: String?
@@ -302,11 +299,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_COURSE_ID, yogaClass.courseId)
             put(COLUMN_TEACHER_NAME, yogaClass.teacherName)
             put(COLUMN_CLASS_DATE, yogaClass.classDate)
-            put(COLUMN_FEE, yogaClass.fee)
             put(COLUMN_NAME_CLASS, yogaClass.className)
             put(COLUMN_DESCRIPTION_CLASS, yogaClass.description)
-            put(COLUMN_DAYS, yogaClass.days)
-            put(COLUMN_DURATION, yogaClass.classDuration)
             put(COLUMN_FIRESTORECLASS_ID, yogaClass.firestoreClassId)
             put(COLUMN_FIRESTORE_COURSE_ID, yogaClass.courseFirestoreId)
 
@@ -352,7 +346,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 } else {
                     null // Nếu không có, trả về null
                 }
-                classList.add(YogaClass(classId, courseId, teacherName, classDate, fee, className, description, days, duration, false,  firestoreClassId, courseFirestoreId)) // Thêm mô tả lớp học vào đối tượng YogaClass
+                classList.add(YogaClass(classId, courseId, teacherName, classDate,  className, description, false,  firestoreClassId, courseFirestoreId)) // Thêm mô tả lớp học vào đối tượng YogaClass
             }
         }
         db.close()
@@ -366,11 +360,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_COURSE_ID, yogaClass.courseId)
             put(COLUMN_TEACHER_NAME, yogaClass.teacherName)
             put(COLUMN_CLASS_DATE, yogaClass.classDate)
-            put(COLUMN_FEE, yogaClass.fee)
             put(COLUMN_NAME_CLASS, yogaClass.className)
             put(COLUMN_DESCRIPTION_CLASS, yogaClass.description)
-            put(COLUMN_DAYS, yogaClass.days)
-            put(COLUMN_DURATION, yogaClass.classDuration)
             put(COLUMN_FIRESTORE_COURSE_ID, yogaClass.courseFirestoreId)
         }
 
@@ -402,11 +393,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val courseId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COURSE_ID))
             val teacherName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TEACHER_NAME))
             val classDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CLASS_DATE))
-            val fee = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_FEE))
             val className = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_CLASS))
             val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION_CLASS))
-            val days = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DAYS))
-            val durations = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DURATION))
             val courseFirestoreId = cursor.getString(cursor.getColumnIndexOrThrow(
                 COLUMN_FIRESTORE_COURSE_ID))
 
@@ -415,11 +403,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 courseId = courseId,
                 teacherName = teacherName,
                 classDate = classDate,
-                fee = fee,
                 className = className,
                 description = description,
-                days = days,
-                classDuration  = durations,
                 courseFirestoreId = courseFirestoreId
             )
         } else {

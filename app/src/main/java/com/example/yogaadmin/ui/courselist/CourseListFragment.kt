@@ -68,7 +68,8 @@ class CourseListFragment : Fragment() {
             },
             onViewDetailsClick = { course ->
                 val manageClassFragment = ManageClassFragment()
-                val args = Bundle().apply { putInt("courseId", course.id) }
+                val args = Bundle().apply { putInt("courseId", course.id)
+                    putString("dayOfWeek", course.dayOfWeek) }
                 manageClassFragment.arguments = args
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, manageClassFragment)

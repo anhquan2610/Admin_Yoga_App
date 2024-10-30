@@ -23,24 +23,6 @@
         android:text="Ngày học" />
 
     <TextView
-        android:id="@+id/textViewDays"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-
-    <TextView
-        android:id="@+id/textViewFee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Học phí" />
-
-    <TextView
-        android:id="@+id/textDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time" />
-
-    <TextView
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

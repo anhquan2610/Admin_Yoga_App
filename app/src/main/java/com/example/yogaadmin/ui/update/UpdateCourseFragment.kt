@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -24,6 +25,7 @@ class UpdateCourseFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private var courseId: Int = 0
     private lateinit var spinnerDayOfWeek: Spinner
+    private lateinit var spinnerCourseTypeUD: Spinner
     private lateinit var editTextTime: EditText
 
     override fun onCreateView(
@@ -46,22 +48,32 @@ class UpdateCourseFragment : Fragment() {
             val nameEditText: EditText = view.findViewById(R.id.editTextCourseName)
             val capacityEditText: EditText = view.findViewById(R.id.editTextCapacity)
             val descriptionEditText: EditText = view.findViewById(R.id.editTextDescription)
-            val typeEditText: EditText = view.findViewById(R.id.editTextCourseType)
+            spinnerCourseTypeUD = view.findViewById(R.id.spinnerCourseTypeUD)
             spinnerDayOfWeek = view.findViewById(R.id.spinnerDayOfWeekUD)
             editTextTime = view.findViewById(R.id.editTextTimeUD)
             val durationEditText: EditText = view.findViewById(R.id.editTextDurationUD)
             val priceEditText: EditText = view.findViewById(R.id.editTextPriceUD)
 
+            // Thiết lập dữ liệu cho Spinner Course Type
+            val courseTypes = resources.getStringArray(R.array.course_types)
+            val courseTypeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, courseTypes)
+            courseTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerCourseTypeUD.adapter = courseTypeAdapter
+
             nameEditText.setText(course.name)
             capacityEditText.setText(course.capacity.toString())
             descriptionEditText.setText(course.description)
-            typeEditText.setText(course.courseType)
+            spinnerCourseTypeUD.setSelection(getCourseTypePosition(course.courseType))
             spinnerDayOfWeek.setSelection(getDayOfWeekPosition(course.dayOfWeek)) // Giả định có hàm getDayOfWeekPosition
             editTextTime.setText(course.time)
             durationEditText.setText(course.duration.toString())
             priceEditText.setText(course.price.toString())
 
-
+            // Đặt giá trị cho Spinner courseType
+            val courseTypePosition = courseTypes.indexOf(course.courseType)
+            if (courseTypePosition >= 0) {
+                spinnerCourseTypeUD.setSelection(courseTypePosition)
+            }
             editTextTime.setOnClickListener { showTimePickerDialog(editTextTime) }
 
             val updateButton: Button = view.findViewById(R.id.buttonUpdate)
@@ -73,7 +85,7 @@ class UpdateCourseFragment : Fragment() {
                 val updatedPrice: Double = priceEditText.text.toString().toDoubleOrNull() ?: 0.0 // Chuyển đổi sang Double
                 val updatedCapacity = capacityEditText.text.toString().toIntOrNull() ?: 0
                 val updatedDescription = descriptionEditText.text.toString()
-                val updatedCourseType = typeEditText.text.toString()
+                val updatedCourseType = spinnerCourseTypeUD.selectedItem.toString()
 
                 if (updatedCourseName.isNotEmpty() &&
                     updatedDayOfWeek.isNotEmpty() &&
@@ -124,6 +136,11 @@ class UpdateCourseFragment : Fragment() {
             val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
             editText.setText(formattedTime)
         }, hour, minute, true).show()
+    }
+
+    private fun getCourseTypePosition(courseType: String): Int {
+        val courseTypes = resources.getStringArray(R.array.course_types)
+        return courseTypes.indexOf(courseType)
     }
 
     private fun getDayOfWeekPosition(dayOfWeek: String): Int {

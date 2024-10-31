@@ -45,7 +45,7 @@ class ManageClassFragment : Fragment() {
 
 
 
-    // Khai báo ActivityResultLauncher
+
     private lateinit var addClassLauncher: ActivityResultLauncher<Intent>
 
     companion object {
@@ -75,15 +75,13 @@ class ManageClassFragment : Fragment() {
 
         dbHelper = DatabaseHelper(requireContext())
         dbHelper.logAllClassIds()
-
-        // Nhận courseId, startDate và endDate từ arguments
         courseId = arguments?.getInt("courseId") ?: 0
         dayOfWeek = arguments?.getString("dayOfWeek")
         Log.d("ClassFormActivity", "Received dayOfWeek: $dayOfWeek")
 
 
 
-        // Ánh xạ RecyclerView, FloatingActionButton và EditText tìm kiếm
+
         classRecyclerView = view.findViewById(R.id.classRecyclerView)
         addButton = view.findViewById(R.id.fabAddClass)
         editTextSearch = view.findViewById(R.id.editTextSearch)
@@ -95,14 +93,14 @@ class ManageClassFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        // Khởi tạo ActivityResultLauncher
+
         addClassLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 refreshClassList()
             }
         }
 
-        // Lấy danh sách lớp học từ DatabaseHelper
+
         val classList = dbHelper.getClassesByCourse(courseId)
         classAdapter = ClassListAdapter(
             classList = classList,
@@ -119,7 +117,7 @@ class ManageClassFragment : Fragment() {
                         dayOfWeek = dayOfWeek,
                         firestoreClassId = firestoreClassId,
                         courseFirestoreId = courseFirestoreId
-                        // Chỉ gọi nếu không null
+
                     )
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, updateClassFragment)
@@ -133,14 +131,13 @@ class ManageClassFragment : Fragment() {
         )
 
 
-        // Thiết lập RecyclerView
+
         classRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         classRecyclerView.adapter = classAdapter
 
-        // Xử lý sự kiện thêm lớp học
+
         addButton.setOnClickListener {
-            Log.d("ManageClassFragment", "courseId: $courseId")
-            Log.d("ManageClassFragment", "dayOfWeek: $dayOfWeek")
+
             val intent = Intent(requireContext(), ClassFormActivity::class.java).apply {
                 putExtra("courseId", courseId)
                 putExtra("dayOfWeek", dayOfWeek)
@@ -150,14 +147,14 @@ class ManageClassFragment : Fragment() {
 
 
 
-        // Tạo một đối tượng TextWatcher
+
         editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Không làm gì
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Gọi phương thức lọc khi người dùng nhập
+
                 filterClasses(s.toString())
             }
 
@@ -172,7 +169,7 @@ class ManageClassFragment : Fragment() {
             setTitle("Xác nhận xóa")
             setMessage("Bạn có chắc chắn muốn xóa lớp học: ${yogaClass.className}?")
             setPositiveButton("Có") { _, _ ->
-                deleteClass(yogaClass.classId, yogaClass.firestoreClassId) // Thêm tham số firestoreId
+                deleteClass(yogaClass.classId, yogaClass.firestoreClassId)
             }
             setNegativeButton("Không", null)
             show()
@@ -187,11 +184,11 @@ class ManageClassFragment : Fragment() {
         }
 
         try {
-            // Nếu firestoreId không null, xóa lớp học từ Firestore trước
+
             if (firestoreClassId != null) {
                 deleteClassFromFirestore(firestoreClassId) { success ->
                     if (success) {
-                        // Nếu xóa thành công từ Firestore, xóa lớp học trong SQLite
+
                         if (dbHelper.deleteClass(classId)) {
                             Toast.makeText(requireContext(), "Lớp học đã được xóa!", Toast.LENGTH_SHORT).show()
                             refreshClassList() // Cập nhật danh sách lớp học
@@ -216,11 +213,11 @@ class ManageClassFragment : Fragment() {
             .delete()
             .addOnSuccessListener {
                 Log.d("FirestoreDelete", "Lớp học đã được xóa khỏi Firestore.")
-                callback(true) // Trả về true nếu xóa thành công
+                callback(true)
             }
             .addOnFailureListener { e ->
                 Log.e("FirestoreDelete", "Lỗi khi xóa lớp học từ Firestore: ${e.message}")
-                callback(false) // Trả về false nếu có lỗi xảy ra
+                callback(false)
             }
     }
 

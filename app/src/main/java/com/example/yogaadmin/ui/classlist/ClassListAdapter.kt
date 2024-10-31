@@ -59,7 +59,7 @@ class ClassListAdapter(
 
         // Hàm định dạng phí
         private fun formatFee(fee: Double): String {
-            val decimalFormat = DecimalFormat("#,##0.00")  // Định dạng với hai chữ số thập phân
+            val decimalFormat = DecimalFormat("#,##0.00")
             return decimalFormat.format(fee)
         }
     }
@@ -79,6 +79,6 @@ class ClassListAdapter(
 
     fun updateClasses(newClassList: List<YogaClass>) {
         classList = newClassList
-        notifyDataSetChanged() // Cập nhật giao diện
+        notifyDataSetChanged()
     }
 }

@@ -23,7 +23,7 @@ object CourseRepository {
     private val firestore = FirebaseFirestore.getInstance()
 
     fun addCourse(course: Course) {
-        val newCourse = course.copy(id = nextId) // Gán ID
+        val newCourse = course.copy(id = nextId)
         courses.add(newCourse)
         nextId++
         Log.d("CourseRepository", "Khoá học đã được thêm: $newCourse")
@@ -37,7 +37,7 @@ object CourseRepository {
 
     fun updateCourseSyncStatus(courseId: Int, isSynced: Boolean) {
         courses.find { it.id == courseId }?.let {
-            it.isSynced = isSynced // Đây là kiểu boolean
+            it.isSynced = isSynced
             Log.d("CourseRepository", "Cập nhật trạng thái đồng bộ cho khóa học: ${it.name}, isSynced: $isSynced")
         } ?: Log.d("CourseRepository", "Khóa học với ID $courseId không tìm thấy.")
     }

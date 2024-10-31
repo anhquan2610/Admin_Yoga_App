@@ -20,18 +20,24 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Thêm Khóa Học Mới"
+        android:text="Add New Course"
         android:textSize="24sp"
         android:textStyle="bold" />
 
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Name:" />
     <EditText
         android:id="@+id/editTextCourseName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tên khóa học" />
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Type:" />
     <Spinner
         android:id="@+id/spinnerCourseType"
         android:layout_width="match_parent"
@@ -39,6 +45,10 @@
         android:entries="@array/course_types"
         android:layout_marginBottom="10dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Day Of Week:" />
     <Spinner
         android:id="@+id/spinnerDayOfWeek"
         android:layout_width="match_parent"
@@ -46,40 +56,54 @@
         android:entries="@array/days_of_week"
         android:layout_marginBottom="10dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time:" />
     <EditText
         android:id="@+id/editTextTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Thời gian (HH:mm)"
         android:inputType="time" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price:" />
     <EditText
         android:id="@+id/editTextPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Giá mỗi lớp (£)"
         android:inputType="numberDecimal" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration:" />
     <EditText
         android:id="@+id/editTextDuration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Thời lượng (phút)"
         android:inputType="number" />
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capacity" />
     <EditText
         android:id="@+id/editTextCapacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Số lượng"
         android:inputType="number" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description:" />
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mô tả" />
+        android:layout_height="wrap_content" />
 
 
     <Button

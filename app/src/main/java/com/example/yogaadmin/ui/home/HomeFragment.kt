@@ -16,10 +16,10 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Thiết lập button để chuyển đến danh sách khóa học
+
         val buttonViewCourses: Button = view.findViewById(R.id.buttonViewCourses)
         buttonViewCourses.setOnClickListener {
             (activity as MainActivity).loadFragment(CourseListFragment())

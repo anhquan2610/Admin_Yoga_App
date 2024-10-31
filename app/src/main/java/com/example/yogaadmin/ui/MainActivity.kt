@@ -17,13 +17,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        // Khởi tạo BottomNavigationView
+
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        // Thiết lập Fragment mặc định
+
         loadFragment(HomeFragment())
 
-        // Thiết lập listener cho BottomNavigationView
+
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -31,14 +31,14 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                // Thêm các mục navigation khác nếu cần
+
                 else -> false
             }
         }
 
     }
 
-    // Phương thức loadFragment để thay thế Fragment
+
     fun loadFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)

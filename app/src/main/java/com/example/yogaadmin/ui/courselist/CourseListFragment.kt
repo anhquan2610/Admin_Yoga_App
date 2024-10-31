@@ -90,7 +90,7 @@ class CourseListFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Listener cho lọc loại khóa học
+
         spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 filterCourses(editTextSearch.text.toString())
@@ -98,7 +98,7 @@ class CourseListFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Listener cho nút "Thêm"
+
         val buttonAddCourse: View = view.findViewById(R.id.buttonAddCourse)
         buttonAddCourse.setOnClickListener {
             val addCourseFragment = AddCourseFragment()
@@ -114,7 +114,7 @@ class CourseListFragment : Fragment() {
             setTitle("Xác nhận xóa")
             setMessage("Bạn có chắc chắn muốn xóa khóa học: ${course.name}?")
             setPositiveButton("Có") { _, _ ->
-                deleteCourseWithClasses(course.id) // Gọi phương thức xóa khóa học cùng các lớp liên quan
+                deleteCourseWithClasses(course.id)
             }
             setNegativeButton("Không", null)
             show()
@@ -129,26 +129,26 @@ class CourseListFragment : Fragment() {
         }
 
         try {
-            // Lấy course và firestoreId từ SQLite
+
             val course = dbHelper.getCourseById(courseId)
             val firestoreId = course?.firestoreId
 
             if (firestoreId != null) {
-                // Bắt đầu giao dịch để xóa khóa học và lớp học liên quan
+
                 val courseClasses = dbHelper.getClassesByCourse(courseId)
 
-                // Xóa tất cả các lớp học liên quan từ SQLite và Firestore
+
                 for (classItem in courseClasses) {
-                    dbHelper.deleteClass(classItem.classId) // Xóa lớp học trong SQLite
-                    classItem.firestoreClassId?.let { // Kiểm tra null
-                        deleteClassFromFirestore(it) // Gọi hàm nếu không null
+                    dbHelper.deleteClass(classItem.classId)
+                    classItem.firestoreClassId?.let {
+                        deleteClassFromFirestore(it)
                     }
                 }
 
-                // Xóa khóa học từ Firestore trước kia
+
                 deleteCourseFromFirestore(firestoreId) { success ->
                     if (success) {
-                        // Nếu xóa thành công từ Firestore, xóa khóa học trong SQLite
+
                         if (dbHelper.deleteCourse(courseId)) {
                             Toast.makeText(requireContext(), "Khóa học và các lớp liên quan đã được xóa!", Toast.LENGTH_SHORT).show()
                             updateCourseList() // Cập nhật danh sách khóa học
@@ -176,11 +176,11 @@ class CourseListFragment : Fragment() {
             .delete()
             .addOnSuccessListener {
                 Log.d("FirestoreDelete", "Khóa học đã được xóa khỏi Firestore.")
-                callback(true) // Trả về true nếu xóa thành công
+                callback(true)
             }
             .addOnFailureListener { e ->
                 Log.e("FirestoreDelete", "Lỗi khi xóa khóa học từ Firestore: ${e.message}")
-                callback(false) // Trả về false nếu có lỗi xảy ra
+                callback(false)
             }
     }
 
@@ -207,7 +207,7 @@ class CourseListFragment : Fragment() {
     }
 
     private fun setupSpinner() {
-        val courseTypes = arrayOf("Tất cả", "Flow Yoga", "Aerial Yoga", "Family Yoga") // Thay đổi theo loại khóa học của bạn
+        val courseTypes = arrayOf("Tất cả", "Flow Yoga", "Aerial Yoga", "Family Yoga")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, courseTypes)
         spinnerFilter.adapter = adapter
     }

@@ -7,7 +7,7 @@
         android:id="@+id/buttonViewCourses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Xem Danh Sách Khóa Học"
+        android:text="Manage List Course"
         android:layout_centerInParent="true" />
 
     <LinearLayout

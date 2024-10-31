@@ -34,7 +34,7 @@ class AddCourseFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Khởi tạo Firestore ở đây để chắc chắn rằng biến firestore đã được khởi tạo
+
         firestore = FirebaseFirestore.getInstance()
     }
 
@@ -58,28 +58,28 @@ class AddCourseFragment : Fragment() {
 
 
 
-        // Trường mới: Thời gian, Giá mỗi lớp, Thời lượng
+
         val editTextTime: EditText = view.findViewById(R.id.editTextTime)
         val editTextPrice: EditText = view.findViewById(R.id.editTextPrice)
         val editTextDuration: EditText = view.findViewById(R.id.editTextDuration)
 
         editTextTime.setOnClickListener { showTimePickerDialog(editTextTime) }
 
-        // Cấu hình dữ liệu cho spinnerDayOfWeek
-        val daysOfWeek = resources.getStringArray(R.array.days_of_week) // Đảm bảo bạn đã định nghĩa mảng này trong strings.xml
+
+        val daysOfWeek = resources.getStringArray(R.array.days_of_week)
         val dayOfWeekAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, daysOfWeek)
         dayOfWeekAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerDayOfWeek.adapter = dayOfWeekAdapter
 
         val buttonBack: ImageView = view.findViewById(R.id.buttonBack)
         buttonBack.setOnClickListener {
-            // Kiểm tra nếu có bất kỳ thông tin nào đã được nhập
+
             if (editTextCourseName.text.isNotEmpty() ||
                 editTextCapacity.text.isNotEmpty() ||
                 editTextDescription.text.isNotEmpty() ||
                 spinnerCourseType.selectedItemPosition != 0
             ) {
-                // Hiển thị hộp thoại xác nhận
+
                 AlertDialog.Builder(requireContext()).apply {
                     setTitle("Xác nhận")
                     setMessage("Bạn có chắc chắn muốn quay lại mà không lưu thay đổi?")
@@ -112,7 +112,7 @@ class AddCourseFragment : Fragment() {
 
             if (courseName.isNotEmpty() && selectedDay.isNotEmpty() && capacity > 0 && courseType.isNotEmpty() &&
                 time.isNotEmpty() && price != null && duration != null) {
-                // Tạo đối tượng khóa học mới mà không gán ID ngay
+
                 val course = Course(
                     name = courseName, dayOfWeek = selectedDay, capacity = capacity,
                     description = description, courseType = courseType, time = time,
@@ -128,17 +128,17 @@ class AddCourseFragment : Fragment() {
     }
 
     private fun uploadData(course: Course) {
-        // Kiểm tra xem có kết nối Internet không
+
         if (!isInternetAvailable(requireContext())) {
             Log.d("InternetCheck", "Không có kết nối Internet.")
             Toast.makeText(requireContext(), "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
-            return // Ngưng thực hiện nếu không có Internet
+            return
         }
 
-        // Tạo ID duy nhất cho khóa học
+
         val courseId = firestore.collection("courses").document().id
 
-        // Tạo đối tượng dữ liệu để lưu vào Firestore
+
         val courseData = hashMapOf(
             "id" to courseId,
             "name" to course.name,
@@ -154,18 +154,18 @@ class AddCourseFragment : Fragment() {
         firestore.collection("courses").document(courseId)
             .set(courseData)
             .addOnSuccessListener {
-                // Cập nhật khóa học trong SQLite với ID Firestore
-                val dbHelper = DatabaseHelper(requireContext())
-                val updatedCourse = course.copy(firestoreId = courseId) // Cập nhật ID Firestore vào đối tượng course
-                dbHelper.addCourse(updatedCourse) // Thêm khóa học với ID mới vào SQLite
 
-                // Cập nhật trạng thái đồng bộ hóa
+                val dbHelper = DatabaseHelper(requireContext())
+                val updatedCourse = course.copy(firestoreId = courseId)
+                dbHelper.addCourse(updatedCourse)
+
+
                 CourseRepository.updateCourseSyncStatus(updatedCourse.id, true)
 
                 Log.d("CourseUpdate", "Cập nhật Firestore ID cho khóa học với ID: ${updatedCourse.id}")
                 Toast.makeText(requireContext(), "Dữ liệu đã được đẩy lên Firestore", Toast.LENGTH_SHORT).show()
 
-                // Quay lại trang danh sách khóa học
+
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, CourseListFragment())
                     .commit()

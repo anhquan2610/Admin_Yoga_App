@@ -111,21 +111,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN $COLUMN_DURATION TEXT")
         }
         if (oldVersion < 19) {
-            db?.execSQL("ALTER TABLE $TABLE_COURSES ADD COLUMN $COLUMN_FIRESTORE_ID TEXT") // Thêm cột firestoreId
+            db?.execSQL("ALTER TABLE $TABLE_COURSES ADD COLUMN $COLUMN_FIRESTORE_ID TEXT")
         }
         if (oldVersion < 20) {
-            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN firestoreClassId TEXT") // Thêm cột firestoreClassId
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN firestoreClassId TEXT")
         }
         if (oldVersion < 21) {
-            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_FIRESTORE_ID TEXT") // Thêm cột firestoreClassId
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_FIRESTORE_ID TEXT")
         }
         if (oldVersion < 22) {
-            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_DAYOFWEEK  TEXT") // Thêm cột firestoreClassId
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_DAYOFWEEK  TEXT")
         }
         if (oldVersion < 23) {
             db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_DURATION_COURSE INTEGER")
             db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_TIME TEXT")
-            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_PRICE REAL")// Thêm cột firestoreClassId
+            db?.execSQL("ALTER TABLE $TABLE_CLASSES ADD COLUMN COLUMN_PRICE REAL")
         }
     }
 
@@ -134,7 +134,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = readableDatabase
         val cursor = db.query(TABLE_COURSES, arrayOf(COLUMN_ID, COLUMN_FIRESTORE_ID, COLUMN_NAME), null, null, null, null, null)
 
-        // Ghi log tên cột và chỉ số tương ứng
+
         val columnIndexId = cursor.getColumnIndex(COLUMN_ID)
         val columnIndexName = cursor.getColumnIndex(COLUMN_NAME)
         val columnIndexFirestoreId = cursor.getColumnIndex(COLUMN_FIRESTORE_ID)
@@ -160,7 +160,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val values = ContentValues().apply {
             put(COLUMN_NAME, course.name)
             put(COLUMN_CAPACITY, course.capacity)
-            put(COLUMN_DESCRIPTION, course.description) // Lưu mô tả khóa học
+            put(COLUMN_DESCRIPTION, course.description)
             put(COLUMN_TYPE, course.courseType)
             put(COLUMN_FIRESTORE_ID, course.firestoreId)
             put(COLUMN_DAYOFWEEK, course.dayOfWeek)
@@ -178,7 +178,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val values = ContentValues().apply {
             put(COLUMN_NAME, course.name)
             put(COLUMN_CAPACITY, course.capacity)
-            put(COLUMN_DESCRIPTION, course.description) // Cập nhật mô tả khóa học
+            put(COLUMN_DESCRIPTION, course.description)
             put(COLUMN_TYPE, course.courseType)
             put(COLUMN_DAYOFWEEK, course.dayOfWeek)
             put(COLUMN_DURATION_COURSE, course.duration)
@@ -200,7 +200,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
                 val dayOfWeek = cursor.getString((cursor.getColumnIndexOrThrow(COLUMN_DAYOFWEEK)))
                 val capacity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CAPACITY))
-                val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION)) // Lấy mô tả khóa học
+                val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION))
                 val courseType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TYPE))
                 val firestoreId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FIRESTORE_ID))
                 val price = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE))
@@ -226,7 +226,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             null
         )
 
-        return cursor.use { // Sử dụng use để tự động đóng con trỏ
+        return cursor.use {
             if (it.moveToFirst()) {
                 val id = it.getInt(it.getColumnIndexOrThrow(COLUMN_ID))
                 val name = it.getString(it.getColumnIndexOrThrow(COLUMN_NAME))
@@ -238,21 +238,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION))
                 val courseType = it.getString(it.getColumnIndexOrThrow(COLUMN_TYPE))
 
-                // Kiểm tra COLUMN_FIRESTORE_ID có tồn tại và lấy giá trị của nó
+
                 val firestoreIdColumnIndex = it.getColumnIndex(COLUMN_FIRESTORE_ID)
                 val firestoreId = if (firestoreIdColumnIndex != -1) {
-                    it.getString(firestoreIdColumnIndex) // Nếu có, lấy giá trị
+                    it.getString(firestoreIdColumnIndex)
                 } else {
-                    null // Nếu không có, trả về null
+                    null
                 }
 
-                // Tạo đối tượng Course với firestoreId là kiểu String?
+
                 Course(id, name, dayOfWeek, time, duration, price ,capacity, description, courseType, false, firestoreId)
             } else {
-                null // Trả về null nếu không tìm thấy khóa học
+                null
             }
         }.also {
-            db.close() // Đóng kết nối cơ sở dữ liệu
+            db.close()
         }
     }
 
@@ -272,7 +272,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val cursor = db.query(TABLE_CLASSES, arrayOf(COLUMN_CLASS_ID,
             COLUMN_COURSE_ID ,COLUMN_FIRESTORECLASS_ID, COLUMN_NAME_CLASS), null, null, null, null, null)
 
-        // Ghi log tên cột và chỉ số tương ứng
+
         val columnIndexId = cursor.getColumnIndex(COLUMN_CLASS_ID)
         val columnIndexCourseId = cursor.getColumnIndex(COLUMN_COURSE_ID)
         val columnIndexName = cursor.getColumnIndex(COLUMN_NAME_CLASS)
@@ -372,7 +372,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             arrayOf(yogaClass.classId.toString())
         )
         db.close()
-        return result > 0 // Trả về true nếu cập nhật thành công
+        return result > 0
     }
 
 
@@ -427,7 +427,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun updateClassFirestoreId(className: String, firestoreClassId: String): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
-            put("firestoreClassId", firestoreClassId) // Giả sử bạn có một cột firestoreId trong bảng lớp học
+            put("firestoreClassId", firestoreClassId)
         }
         val result = db.update("classes", contentValues, "className = ?", arrayOf(className))
         return result > 0
@@ -437,7 +437,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun updateClassSyncStatus(classId: Int, firestoreClassId: String?) {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_FIRESTORECLASS_ID, firestoreClassId) // Cập nhật ID Firestore của lớp học
+            put(COLUMN_FIRESTORECLASS_ID, firestoreClassId)
         }
 
         val result = db.update(

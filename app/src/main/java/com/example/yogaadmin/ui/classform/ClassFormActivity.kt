@@ -39,8 +39,8 @@ class ClassFormActivity : AppCompatActivity() {
 
 
     private var dayOfWeek: String? = null
-    private var isDataEntered = false // Cờ theo dõi dữ liệu nhập vào
-    private var selectedDaysCount = 0 // Biến đếm số checkbox đã chọn
+    private var isDataEntered = false
+
 
 
 
@@ -49,7 +49,7 @@ class ClassFormActivity : AppCompatActivity() {
         setContentView(R.layout.activity_class_form)
 
         dbHelper = DatabaseHelper(this)
-        firestore = FirebaseFirestore.getInstance() // Khởi tạo Firestore
+        firestore = FirebaseFirestore.getInstance()
 
         // Khai báo các EditText và Button
         classNameEditText = findViewById(R.id.editTextClassName)
@@ -64,18 +64,18 @@ class ClassFormActivity : AppCompatActivity() {
 
         // Lấy courseId từ Intent
         val courseId = intent.getIntExtra("courseId", 0)
-        courseList = dbHelper.getAllCourses() // Lấy danh sách khóa học từ DatabaseHelper
+        courseList = dbHelper.getAllCourses()
         dayOfWeek = intent.getStringExtra("dayOfWeek")
 
 
 
 
-        // Xử lý sự kiện khi nhấn vào EditText để chọn ngày
+
         classDateEditText.setOnClickListener {
             showDatePickerDialog()
         }
 
-        // Cập nhật cờ khi người dùng nhập dữ liệu
+
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -90,21 +90,21 @@ class ClassFormActivity : AppCompatActivity() {
 
         descriptionEditText.addTextChangedListener(textWatcher)
 
-        // Xử lý sự kiện khi nhấn nút Lưu
+
         saveButton.setOnClickListener {
             handleSaveClass(courseId)
         }
 
-        // Xử lý sự kiện khi nhấn nút Quay lại
+
         backButton.setOnClickListener {
             if (isDataEntered) {
                 showConfirmationDialog()
             } else {
-                finish() // Nếu không có dữ liệu đã nhập, đóng Activity
+                finish()
             }
         }
 
-        // Đăng ký sự kiện cho các checkbox
+
 
     }
 
@@ -153,7 +153,7 @@ class ClassFormActivity : AppCompatActivity() {
                         Toast.makeText(this, "Lỗi khi lưu vào Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
             } else {
-                // Nếu không có internet, hiển thị thông báo và chỉ lưu vào SQLite
+
                 Toast.makeText(this, "Không có kết nối internet. Lớp học đã được lưu cục bộ và sẽ tự động đẩy lên khi có mạng.", Toast.LENGTH_LONG).show()
             }
 
@@ -175,7 +175,7 @@ class ClassFormActivity : AppCompatActivity() {
             { _, year, month, dayOfMonth ->
                 val selectedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
 
-                // Kiểm tra xem ngày đã chọn có thứ trùng với dayOfWeek không
+
                 if (isDayOfWeekMatch(selectedDate, dayOfWeek)) {
                     classDateEditText.setText(selectedDate)
                 } else {
@@ -193,17 +193,17 @@ class ClassFormActivity : AppCompatActivity() {
 
 
     private fun isDayOfWeekMatch(selectedDate: String, dayOfWeek: String?): Boolean {
-        // Chuyển đổi định dạng chuỗi thành ngày để so sánh
+
         val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val selected = sdf.parse(selectedDate)
 
-        // Lấy thứ của ngày đã chọn
+
         val calendar = Calendar.getInstance().apply {
             time = selected
         }
         val selectedDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
-        // Chuyển đổi dayOfWeek từ chuỗi sang số thứ tự
+
         val dayOfWeekMap = mapOf(
             "Monday" to Calendar.MONDAY,
             "Tuesday" to Calendar.TUESDAY,

@@ -19,42 +19,54 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Thêm Lớp Học Mới"
+        android:text="Add New Clas"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clas Name:" />
     <EditText
         android:id="@+id/editTextClassName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập tên lớp học" />
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teacher Name:" />
     <EditText
         android:id="@+id/editTextTeacherName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập tên giáo viên" />
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Day:" />
     <EditText
         android:id="@+id/editTextClassDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập ngày lớp học"
         android:focusable="false" />
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description:" />
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mô tả" />
+        android:layout_height="wrap_content" />
 
     
     <Button
         android:id="@+id/buttonSave"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lưu"
+        android:text="Save"
+
         android:layout_marginTop="16dp" />
 </LinearLayout>

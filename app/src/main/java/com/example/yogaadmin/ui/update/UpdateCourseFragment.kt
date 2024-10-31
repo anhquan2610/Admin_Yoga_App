@@ -64,7 +64,7 @@ class UpdateCourseFragment : Fragment() {
             capacityEditText.setText(course.capacity.toString())
             descriptionEditText.setText(course.description)
             spinnerCourseTypeUD.setSelection(getCourseTypePosition(course.courseType))
-            spinnerDayOfWeek.setSelection(getDayOfWeekPosition(course.dayOfWeek)) // Giả định có hàm getDayOfWeekPosition
+            spinnerDayOfWeek.setSelection(getDayOfWeekPosition(course.dayOfWeek))
             editTextTime.setText(course.time)
             durationEditText.setText(course.duration.toString())
             priceEditText.setText(course.price.toString())
@@ -81,8 +81,8 @@ class UpdateCourseFragment : Fragment() {
                 val updatedCourseName = nameEditText.text.toString()
                 val updatedDayOfWeek = spinnerDayOfWeek.selectedItem.toString()
                 val updatedTime = editTextTime.text.toString()
-                val updatedDuration: Int = durationEditText.text.toString().toIntOrNull() ?: 0 // Chuyển đổi sang Int
-                val updatedPrice: Double = priceEditText.text.toString().toDoubleOrNull() ?: 0.0 // Chuyển đổi sang Double
+                val updatedDuration: Int = durationEditText.text.toString().toIntOrNull() ?: 0
+                val updatedPrice: Double = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
                 val updatedCapacity = capacityEditText.text.toString().toIntOrNull() ?: 0
                 val updatedDescription = descriptionEditText.text.toString()
                 val updatedCourseType = spinnerCourseTypeUD.selectedItem.toString()

@@ -39,7 +39,7 @@
             android:id="@+id/editClassName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên lớp học" />
+ />
 
         <!-- Tên giáo viên -->
         <TextView
@@ -50,7 +50,7 @@
             android:id="@+id/editTeacherName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên giáo viên" />
+ />
 
         <!-- Ngày bắt đầu -->
         <TextView
@@ -61,7 +61,7 @@
             android:id="@+id/editClassDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ngày bắt đầu (dd/MM/yyyy)" />
+ />
 
 
         <!-- Mô tả -->
@@ -73,7 +73,7 @@
             android:id="@+id/editDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mô tả" />
+ />
 
 
         <!-- Nút cập nhật -->
@@ -81,7 +81,7 @@
             android:id="@+id/buttonUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cập nhật" />
+            android:text="Update" />
 
     </LinearLayout>
 </ScrollView>

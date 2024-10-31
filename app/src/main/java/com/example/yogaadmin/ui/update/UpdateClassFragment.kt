@@ -33,8 +33,8 @@ class UpdateClassFragment : Fragment() {
 
 
 
-    private var yogaClassId: Int = 0 // ID của lớp học cần cập nhật
-    private var courseId: Int = 0 // ID của khóa học
+    private var yogaClassId: Int = 0
+    private var courseId: Int = 0
     private var dayOfWeek: String? = null
     private val checkBoxList = mutableListOf<CheckBox>()
 
@@ -43,7 +43,7 @@ class UpdateClassFragment : Fragment() {
 
     companion object {
         fun newInstance(classId: Int, courseId: Int, firestoreClassId: String?, courseFirestoreId: String? ,dayOfWeek: String?): UpdateClassFragment {
-            val fragment = UpdateClassFragment() // Tạo một thể hiện mới của UpdateClassFragment
+            val fragment = UpdateClassFragment()
 
             val args = Bundle().apply {
                 putInt("classId", classId)
@@ -52,7 +52,7 @@ class UpdateClassFragment : Fragment() {
                 putString("dayOfWeek", dayOfWeek)
                 putString("courseFirestoreId", courseFirestoreId)
             }
-            fragment.arguments = args // Gán arguments cho fragment
+            fragment.arguments = args
             return fragment
         }
     }
@@ -78,7 +78,6 @@ class UpdateClassFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        // Lấy arguments từ Fragment
         arguments?.let {
             yogaClassId = it.getInt("classId", 0)
             courseId = it.getInt("courseId", 0)
@@ -87,7 +86,7 @@ class UpdateClassFragment : Fragment() {
         }
 
 
-        // Khởi tạo các view
+
         editClassName = view.findViewById(R.id.editClassName)
         editTeacherName = view.findViewById(R.id.editTeacherName)
         editClassDate = view.findViewById(R.id.editClassDate)
@@ -97,18 +96,18 @@ class UpdateClassFragment : Fragment() {
 
 
 
-        // Thêm tất cả các CheckBox vào danh sách để quản lý
 
 
-        loadClassDetails() // Tải thông tin lớp học
 
-        // Hiển thị DatePickerDialog khi nhấn vào editClassDate
+        loadClassDetails()
+
+
         editClassDate.setOnClickListener {
             showDatePickerDialog()
         }
 
         buttonUpdate.setOnClickListener {
-            updateClassInfo() // Cập nhật thông tin lớp học
+            updateClassInfo()
         }
 
         return view
@@ -122,7 +121,7 @@ class UpdateClassFragment : Fragment() {
             { _, year, month, dayOfMonth ->
                 val selectedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
 
-                // Kiểm tra xem ngày đã chọn có thứ trùng với dayOfWeek không
+
                 if (isDayOfWeekMatch(selectedDate, dayOfWeek)) {
                     editClassDate.setText(selectedDate)
                 } else {
@@ -140,17 +139,17 @@ class UpdateClassFragment : Fragment() {
 
 
     private fun isDayOfWeekMatch(selectedDate: String, dayOfWeek: String?): Boolean {
-        // Chuyển đổi định dạng chuỗi thành ngày để so sánh
+
         val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val selected = sdf.parse(selectedDate)
 
-        // Lấy thứ của ngày đã chọn
+
         val calendar = Calendar.getInstance().apply {
             time = selected
         }
         val selectedDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
-        // Chuyển đổi dayOfWeek từ chuỗi sang số thứ tự
+
         val dayOfWeekMap = mapOf(
             "Monday" to Calendar.MONDAY,
             "Tuesday" to Calendar.TUESDAY,
@@ -172,29 +171,27 @@ class UpdateClassFragment : Fragment() {
             editClassName.setText(it.className)
             editTeacherName.setText(it.teacherName)
 
-            // Hiển thị giá trị ngày từ cơ sở dữ liệu
+
             Log.d("UpdateClassFragment", "Class Date from DB: ${it.classDate}")
 
-            // Đảm bảo rằng định dạng ngày là đúng
             val originalDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             try {
-                // Phân tích ngày từ cơ sở dữ liệu
+
                 val parsedDate = originalDateFormat.parse(it.classDate)
-                // Nếu phân tích thành công, định dạng lại để hiển thị
+
                 editClassDate.setText(originalDateFormat.format(parsedDate))
             } catch (e: Exception) {
                 Log.e("UpdateClassFragment", "Error parsing date: ${e.message}")
-                editClassDate.setText("") // Xóa hoặc đặt một giá trị mặc định
+                editClassDate.setText("")
             }
 
 
             editDescription.setText(it.description)
 
-            // Cập nhật trạng thái của các checkbox
 
 
 
-            // Kiểm tra số lượng checkbox đã được chọn
+
             val checkedCount = checkBoxList.count { it.isChecked }
             if (checkedCount >= 2) {
                 checkBoxList.forEach { cb -> if (!cb.isChecked) cb.isEnabled = false }
@@ -211,13 +208,13 @@ class UpdateClassFragment : Fragment() {
         val description = editDescription.text.toString()
 
 
-        // Kiểm tra dữ liệu hợp lệ trước khi cập nhật
+
         if (className.isBlank() || teacherName.isBlank() || classDate.isBlank()) {
             Toast.makeText(requireContext(), "Vui lòng nhập đầy đủ thông tin bắt buộc!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Cập nhật thông tin trong SQLite
+
         val dbHelper = DatabaseHelper(requireContext())
         courseId = arguments?.getInt("courseId") ?: 0
         yogaClassId = arguments?.getInt("classId")?:0
@@ -241,11 +238,11 @@ class UpdateClassFragment : Fragment() {
         if (success) {
             Toast.makeText(requireContext(), "Lớp học đã được cập nhật trong SQLite!", Toast.LENGTH_SHORT).show()
 
-            // Cập nhật dữ liệu trong Firestore nếu firestoreClassId tồn tại
+
             updatedClass.firestoreClassId?.let { firestoreClassId ->
                 updateClassInFirestore(firestoreClassId, updatedClass)
             } ?: run {
-                // Thực hiện popBackStack nếu không có Firestore ID
+
                 requireActivity().supportFragmentManager.popBackStack()
             }
         } else {
@@ -261,7 +258,7 @@ class UpdateClassFragment : Fragment() {
             "classDate" to yogaClass.classDate,
             "description" to yogaClass.description,
             "courseId" to yogaClass.courseId,
-            "firestoreClassId" to yogaClass.firestoreClassId, // Đảm bảo lưu firestoreClassId
+            "firestoreClassId" to yogaClass.firestoreClassId,
             "courseFirestoreId" to yogaClass.courseFirestoreId
         )
 
